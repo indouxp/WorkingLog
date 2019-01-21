@@ -14,4 +14,39 @@ name2ip.ps1修正
     name2ip.ps1に、ありえないdnsを与える -> タイムアウト -> 異常
     hostsに、存在しないドメイン名を与える。 -> 正常
 
-  
+
+●IEを起動する
+Option Explicit
+Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+Declare Function GetTickCount Lib "kernel32" () As Long
+
+Sub subTest()
+    Dim ie As Object
+    Set ie = CreateObject("InternetExplorer.Application")
+    ie.Visible = True
+End Sub
+
+●IEを起動し、データを取得する
+Option Explicit
+Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+Declare Function GetTickCount Lib "kernel32" () As Long
+
+Sub subTest()
+
+    Dim ie As InternetExplorer
+    
+    Set ie = CreateObject("InternetExplorer.Application")
+    
+    ie.Visible = True
+    
+    'ie.Navigate "https://myp.pe-bank.jp/login/?next=/"
+    ie.Navigate "http://www.impressjapan.jp/appended/3384/4-7.html"
+    
+    Do While ie.Busy Or ie.ReadyState < READYSTATE_COMPLETE
+        Debug.Print ie.Busy & ":" & ie.ReadyState
+        DoEvents
+    Loop
+    
+    MsgBox ie.Document.body.innerText
+    
+End Sub
