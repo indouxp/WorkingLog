@@ -1,0 +1,17 @@
+conoHaへのhttp proxy経由でのssh接続
+  connect-proxy -d -H obprx01.intra.hitachi.co.jp:8080 118-27-7-9 22
+  Enter proxy authentication password for 20166038@obprx01.intra.hitachi.co.jp:
+  DEBUG: >>> "Proxy-Authorization: Basic xxxxx\r\n"
+  DEBUG: >>> "\r\n"
+  DEBUG: <<< "HTTP/1.1 503 Service Unavailable\r\n"
+  DEBUG: http proxy is not allowed.
+  FATAL: failed to begin relaying via HTTP.
+  接続可能なとき(先週の木曜日)もあったのに、今は許可されていないのかな。
+  
+name2ip.ps1修正
+  ネームサーバへの接続失敗は、エラーとし、ドメイン名がない等の名前引きエラーは、ノーエラーとする。※テストを除いて完了
+  テスト
+    name2ip.ps1に、ありえないdnsを与える -> タイムアウト -> 異常
+    hostsに、存在しないドメイン名を与える。 -> 正常
+
+  
