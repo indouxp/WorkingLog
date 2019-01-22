@@ -50,3 +50,7 @@ Sub subTest()
     MsgBox ie.Document.body.innerText
     
 End Sub
+
+name2ip.ps1
+  DNS request timed out.は、stdout
+  要求がタイムアウトしましたは、stderr
