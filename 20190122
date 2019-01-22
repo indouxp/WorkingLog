@@ -1,3 +1,83 @@
 name2ip.ps1
   dnsへの通信ができない場合のタイムアウトメッセージは、標準出力でなく標準エラー出力に出力されるため、昨日の修正ではうまくいかない。
+  再テスト
+  tmp 2019/01/22 15:55:42> type .\ts.c
+  #include <stdio.h>
+  #include <string.h>
+
+  int main(int argc, char *argv[]) {
+
+    if (1 < argc) {
+      if (strcmp(argv[1], "normal") == 0) {
+        return 0;
+      }
+      if (strcmp(argv[1], "error")  == 0){
+        fprintf(stderr, "ERROR\n");
+        return 9;
+      }
+    }
+  }
+
+  tmp 2019/01/22 15:55:46> type .\ts.ps1
+  $ErrorActionPreference = "Stop"     # デフォルトでのErrorAction変更
+  Set-PSDebug -strict
+
+  try {
+    $result = & .\ts.exe normal 2>&1
+    "done -------------"
+    $result
+    "done -------------"
+  } catch [Exception] {
+    "exception start --"
+    $error[0]
+    "exception end ----"
+  }
+
+
+
+  tmp 2019/01/22 15:55:59> .\ts.ps1
+  done -------------
+  done -------------
+  tmp 2019/01/22 15:56:05> vi .\ts.ps1
+  tmp 2019/01/22 15:56:18> .\ts.ps1
+  exception start --
+  ts.exe : ERROR
+  発生場所 W:\prjs\tmp\ts.ps1:5 文字:14
+  +   $result = & <<<<  .\ts.exe error 2>&1
+      + CategoryInfo          : NotSpecified: (ERROR:String) []、RemoteException
+      + FullyQualifiedErrorId : NativeCommandError
+
+  exception end ----
+  tmp 2019/01/22 15:56:21>
+  tmp 2019/01/22 15:58:17> type ts.c
+  #include <stdio.h>
+  #include <string.h>
+
+  int main(int argc, char *argv[]) {
+
+    if (1 < argc) {
+      if (strcmp(argv[1], "normal") == 0) {
+        return 0;
+      }
+      if (strcmp(argv[1], "error")  == 0){
+        fprintf(stderr, "ERROR\n");
+        return 0;
+      }
+    }
+  }
+  tmp 2019/01/22 15:58:27> bcc32c ts.c
+  Embarcadero C++ 7.20 for Win32 Copyright (c) 2012-2016 Embarcadero Technologies, Inc.
+  ts.c:
+  Turbo Incremental Link 6.75 Copyright (c) 1997-2016 Embarcadero Technologies, Inc.
+  tmp 2019/01/22 15:59:36> .\ts.ps1
+  exception start --
+  ts.exe : ERROR
+  発生場所 W:\prjs\tmp\ts.ps1:5 文字:14
+  +   $result = & <<<<  .\ts.exe error 2>&1
+      + CategoryInfo          : NotSpecified: (ERROR:String) []、RemoteException
+      + FullyQualifiedErrorId : NativeCommandError
+
+  exception end ----
+  tmp 2019/01/22 15:59:50>
+  エラー出力への書き出しがあると、例外が発生している。
   
